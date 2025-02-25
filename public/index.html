@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase</title>
+</head>
+
+<body>
+    <h1>Welcome to Firebase</h1>
+    <button onclick="signG()">Sign in with Google</button>
+
+    <input type="email" placeholder="email" id="mail">
+    <input type="password" placeholder="password" id="pass">
+    <button onclick="signUp()">sign up</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdLxUq5Dld7VnGrptP0F2NEr9Zdk6YGns",
+            authDomain: "any-name-a634a.firebaseapp.com",
+            projectId: "any-name-a634a",
+            storageBucket: "any-name-a634a.firebasestorage.app",
+            messagingSenderId: "339830621461",
+            appId: "1:339830621461:web:2b0fa6ed02da3547cdd51c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const signG = () => {
+            signInWithPopup(auth, provider)
+                .then(result => {
+                    const user = result.user
+                    console.log(user);
+                    if(user) {
+                        window.location.href = 'dashboard.html'
+                    }
+                })
+                .catch(error => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+                })
+        }
+
+        const signUp = () => {
+            // alert('yes')
+            createUserWithEmailAndPassword(auth, mail.value, pass.value)
+                .then((info) => {
+                    const user = info.user
+                    console.log(user);
+                    if(user) {
+                        window.location.href = 'dashboard.html'
+                    }
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+
+                    if (errorCode == 'auth/invalid-email') {
+                        alert('invalid email')
+                    }
+                    if (errorCode == 'auth/missing-email') {
+                        alert('kindly provide an email')
+                    }
+                    if (errorCode == 'auth/email-already-in-use') {
+                        alert('account already exists')
+                    }
+                    if (errorCode == 'auth/password-does-not-meet-requirements') {
+                        alert('password does not meet requirements')
+                    }
+                })
+        }
+        window.signG = signG
+        window.signUp = signUp
+    </script>
+</body>
+
+</html>

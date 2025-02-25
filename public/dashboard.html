@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <h1>Welcome to Dashboard</h1>
+    <button onclick="signO()">Sign out</button>
+    <h1>Food Combinations</h1>
+    <input type="text" id="swallow">
+    <input type="text" id="soup">
+    <input type="text" id="drinks">
+    <button>Add items</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdLxUq5Dld7VnGrptP0F2NEr9Zdk6YGns",
+            authDomain: "any-name-a634a.firebaseapp.com",
+            projectId: "any-name-a634a",
+            storageBucket: "any-name-a634a.firebasestorage.app",
+            messagingSenderId: "339830621461",
+            appId: "1:339830621461:web:2b0fa6ed02da3547cdd51c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log(user);
+            } else {
+                console.log('no user found');
+                setTimeout(()=>{
+                    window.location.href = 'index.html'
+                }, 1000)
+            }
+        });
+
+        const signO = () => {
+            signOut(auth)
+            .then(()=>{console.log('user signed out successfully');
+            })
+            .catch((err)=>{
+                console.log(err, 'user have agidi, failed to sign out');
+                
+            })
+        }
+        window.signO = signO
+    </script>
+</body>
+
+</html>
