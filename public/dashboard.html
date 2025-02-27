@@ -11,14 +11,22 @@
     <h1>Welcome to Dashboard</h1>
     <button onclick="signO()">Sign out</button>
     <h1>Food Combinations</h1>
-    <input type="text" id="swallow">
-    <input type="text" id="soup">
-    <input type="text" id="drinks">
-    <button>Add items</button>
+    <input type="text" id="swallow" placeholder="swallow">
+    <input type="text" id="soup" placeholder="soup">
+    <input type="text" id="drinks" placeholder="drinks">
+    <button onclick="addItems()">Add items</button><br><br>
+
+    <input type="text" id="phone" placeholder="phone">
+    <input type="text" id="laptop" placeholder="laptop">
+    <button onclick="addDevice()">Add device</button>
+
+    <div id="show"></div>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -27,12 +35,14 @@
             projectId: "any-name-a634a",
             storageBucket: "any-name-a634a.firebasestorage.app",
             messagingSenderId: "339830621461",
-            appId: "1:339830621461:web:2b0fa6ed02da3547cdd51c"
+            appId: "1:339830621461:web:2b0fa6ed02da3547cdd51c",
+            databaseURL: "https://any-name-a634a-default-rtdb.firebaseio.com"
         };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const database = getDatabase(app);
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -54,7 +64,49 @@
                 
             })
         }
+
+        const addItems = () => {
+            if (swallow.value === "" || soup.value === "" || drinks.value === "") {
+                alert("Inputs cannot be empty")
+            } else {
+                let obj = {
+                    swallow: swallow.value,
+                    soup: soup.value,
+                    drinks: drinks.value
+                }
+                console.log(obj);
+                let userRef = ref(database, 'foods/2')
+                set(userRef, obj)
+            }
+        }
+        const addDevice = () => {
+            if (phone.value === "" || laptop.value === "") {
+                alert("Inputs cannot be empty")
+            } else {
+                let obj = {
+                    phone: phone.value,
+                    laptop: laptop.value
+                }
+                console.log(obj);
+                let userRef = ref(database, 'device/1')
+                set(userRef, obj)
+            }
+        }
+        window.addDevice = addDevice
+        window.addItems = addItems
         window.signO = signO
+
+        let userRef = ref(database, 'foods')
+        onValue(userRef, (snapshot)=>{
+            const data = snapshot.val()
+            console.log(data);
+            show.innerHTML = ''
+            data.map((food, index)=>{
+                show.innerHTML += `
+                    <p>${index+1}. ${food.swallow}, ${food.soup}, ${food.drinks}</p>
+                `
+            })
+        })
     </script>
 </body>
 
